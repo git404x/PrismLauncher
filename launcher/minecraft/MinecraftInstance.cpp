@@ -571,6 +571,13 @@ QStringList MinecraftInstance::javaArguments()
     QStringList args;
 
     args << "-Duser.language=en";
+    // blackhole telemetry and auth at the kernel routing layer
+    const QStringList blackholedEndpoints = {
+        "auth", "account", "session", "services"
+    };
+    for (const auto& endpoint : blackholedEndpoints) {
+        args << QString("-Dminecraft.api.%1.host=http://0.0.0.0").arg(endpoint);
+    }
 
     // custom args go first. we want to override them if we have our own here.
     args.append(extraArguments());
