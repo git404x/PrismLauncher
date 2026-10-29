@@ -3,7 +3,13 @@ name: Build Application and Make Release
 on:
   push:
     tags:
-      - "*"
+      - "*-px"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version or tag name (e.g. 11.1.1-px)"
+        type: string
+        required: false
 
 permissions: {}
 
@@ -39,7 +45,10 @@ jobs:
         uses: actions/download-artifact@v8
       - name: Grab and store version
         run: |
-          tag_name=$(echo ${{ github.ref }} | grep -oE "[^/]+$")
+          tag_name="${{ inputs.version }}"
+          if [ -z "$tag_name" ]; then
+            tag_name=$(echo ${{ github.ref }} | grep -oE "[^/]+$")
+          fi
           echo "VERSION=$tag_name" >> $GITHUB_ENV
       - name: Package artifacts properly
         run: |
@@ -97,9 +106,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ env.VERSION }}
           name: Prism Launcher ${{ env.VERSION }}
-          draft: true
+          draft: false
           prerelease: false
           fail_on_unmatched_files: true
           files: |

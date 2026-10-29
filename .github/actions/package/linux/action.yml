@@ -77,7 +77,7 @@ runs:
           gpg --import privkey.asc
           gpg --export --armor ${{ inputs.gpg-private-key-id }} > pubkey.asc
         else
-          echo ":warning: Skipped code signing for Linux AppImage, as gpg key was not present." >> $GITHUB_STEP_SUMMARY
+          echo "Skipped code signing for Linux AppImage (GPG key not configured)." >> $GITHUB_STEP_SUMMARY
         fi
 
         sharun lib4bin \

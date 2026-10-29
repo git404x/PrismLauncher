@@ -1,9 +1,6 @@
 name: Merged Blocking Pull Request Automation
 
 on:
-  pull_request_target:
-    types:
-      - closed
   workflow_dispatch:
     inputs:
       pr_id:
